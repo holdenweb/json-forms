@@ -1,15 +1,22 @@
+"""
+This program, given appropriate specifications, will solicit the
+input of a complex data structure element by element, producing
+the collected value in JSON form on standard output for further
+processing by a JSON pipeline.
+"""
+
 import sys
 import json
 
-data = (
-        ('first', ),
-        ('second', ),
-        ('third', ),
-        ('fourth', ),
-    )
+data = {
+        'first': (),
+        'second': (),
+        'third': (),
+        'fourth': ()
+        }
 
 dd = {}
-for name, in data:
+for name, attrs in data.items():
     dd[name] = input(f"{name}: ").strip()
 
 json.dump(dd, sys.stdout)
