@@ -17,6 +17,7 @@ data = {
 
 dd = {}
 for name, attrs in data.items():
-    dd[name] = input(f"{name}: ").strip()
+    sys.stderr.write(f"{name}: ")
+    dd[name] = input().strip()
 
 json.dump(dd, sys.stdout)
