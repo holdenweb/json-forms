@@ -1,6 +1,8 @@
 """
-Value fields are provided by data specifications that I
-haven't yet really thought about enough.
+Standard UNIX filtering: JSON input comes from stdin,
+
+
+Creates empty dictionary if primary key not present.
 """
 
 import json
@@ -9,21 +11,14 @@ from hu import ObjectDict, DottedDict
 
 import shelve
 
-from contextlib import contextmanager
-
-@contextmanager
-def record(db_name, pk, key):
-    with shelve.open(db_name, writeback=True) as db:
-        val =  db[pk]
-        yield DottedDict(val)
-
-
 if __name__ == "__main__":
     import sys
     dbn = 'test_db'
-    pk = sys.argv[1]
-    key = sys.argv[2]
-    with record(dbn, pk, key) as value:
-         ival = json.load(sys.stdin)
-         value[key] = ival
-
+    pk, key = sys.argv[1].split('.', 1)
+    with shelve.open(dbn, writeback=True) as db:
+        try:
+                val =  db[pk]
+        except KeyError:
+                val = {}
+        val = DottedDict(val)
+        val[key] = json.load(sys.stdin)

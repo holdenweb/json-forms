@@ -21,7 +21,6 @@ def record(db_name, pk, key):
 if __name__ == "__main__":
     import sys
     dbn = 'test_db'
-    pk = sys.argv[1]
-    key = sys.argv[2]
+    pk, key = sys.argv[1].split('.', 1)
     with record(dbn, pk, key) as value:
         json.dump(value, sys.stdout)
