@@ -112,7 +112,7 @@ class mainGUI(QWidget):
         ## Short aternate names make configuration simpler ;-)
         ## Buttons
         self.submitButton = subb = QPushButton("Submit")
-        self.quitButton = qb = QPushButton("Quit")
+        self.cancelButton = qb = QPushButton("Cancel")
         ## Status bar
         self.time_label = lbl = QLabel("00:00:00", font=self.body_font)
 
@@ -133,10 +133,8 @@ class mainGUI(QWidget):
         vbox.addLayout(button_bar)
 
         ## Connect UI signals to slots
-        #cs.currentIndexChanged.connect(self.new_customer_selected)
-        #ps.currentIndexChanged.connect(self.new_project_selected)
-        #ts.currentIndexChanged.connect(self.new_task_selected)
-        self.quitButton.clicked.connect(self.close)
+        self.submitButton.clicked.connect(self.out_value)
+        self.cancelButton.clicked.connect(sys.exit)
 
         ## Establish the window layout
         self.setLayout(vbox)
@@ -146,30 +144,9 @@ class mainGUI(QWidget):
         ## sn.setEnabled(False)
         self.setGeometry(300, 300, 300, 250)
 
-    @pyqtSlot(int)
-    def new_customer_selected(self, i):
-        "Handle change of customer by switching projects."
-        key = self.project_selector.selected_key
-        log.info(f"Project selected: {i}, key {key}")
-        self.customer_selector.populate_chained()
-
-    @pyqtSlot(int)
-    def new_project_selected(self, i):
-        "Handle change of project by switching tasks."
-        key = self.project_selector.selected_key
-        log.info(f"Project selected: {i}, key {key}")
-        self.project_selector.populate_chained()
-
-    @pyqtSlot(int)
-    def new_task_selected(self, i):
-        self.pauseButton.clicked.emit()
-        key = self.task_selector.selected_key
-        log.info(f"Task selected: {i}, key {key}")
-        if key not in self.task_windows:
-            self.task_windows[key] = taskGUI(key)
-        new_window = self.task_windows[key]
-        new_window.show()
-        new_window.raise_()
+    def out_value(self):
+        print({f.name: f.widget.text() for f in self.form.fields})
+        self.close()
 
     def show_message(self, msg):
         self.messageArea.setText(msg)
@@ -190,6 +167,8 @@ class mainGUI(QWidget):
     ## Signal the caller that the result was received.
     # self.ryn_sig.emit(answer == QMessageBox.Yes)
 
+    def results(self):
+        return self
 
 class taskGUI(QWidget):
     def __init__(self, task_id):
