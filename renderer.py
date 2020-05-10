@@ -1,7 +1,10 @@
+LF = '\n'
+
 def render(obj):
     output = []
     for field in obj:
-        output.append(field.render)
+        output.append(field.render())
+    return LF.join(output)
 
 class Field:
     def __init__(self, name: str):
@@ -16,7 +19,7 @@ class Field:
 
     def render_label(self):
         return f"""\
-<div>
+<div class="label">
     {self.name}:
 </div>
 """
@@ -24,12 +27,10 @@ class Field:
     def render_input(self):
         "Default input widget asks for string."
         return f"""\
-<div>
+<div class="value">
     <input name={self.name}/>
 </div>
 """
-
-LF = '\n'
 
 class ObjField(Field):
     def __init__(self, name: str, fields: list):
@@ -43,3 +44,6 @@ class ObjField(Field):
     {LF.join(output)}
 </div>
 """
+form_fields = [
+    Field("First")
+]
