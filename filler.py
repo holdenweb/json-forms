@@ -1,8 +1,11 @@
 import sys
 
 from guiFill import mainGUI
+from renderer import Field
+
 
 from AnyQt.QtWidgets import QApplication
 app = QApplication(sys.argv)
-gui = mainGUI()
+form = [Field(x) for x in  ('first', 'second', 'third')]
+gui = mainGUI(form)
 app.exec_()

@@ -20,12 +20,12 @@ from AnyQt.QtWidgets import (
     QPushButton,
     QHBoxLayout,
     QVBoxLayout,
+    QGridLayout,
     QLabel,
     QLineEdit,
     QCheckBox,
     QMessageBox,
 )
-
 
 log = logging.getLogger(name="GUI.main")
 log.setLevel(logging.INFO)
@@ -79,8 +79,9 @@ class mainGUI(QWidget):
     msg_sig = pyqtSignal(str)  # Display this message to the operator
     oyn_sig = pyqtSignal(str)  # Request for operator yes/no
 
-    def __init__(self):
+    def __init__(self, form):
         "Create and display the GUI, but do not start it."
+        self.form  = form
         log.info("Creating GUI object")
         QWidget.__init__(self)
         self.ui_font = QFont("Microsoft Sans Serif", 12, QFont.Bold)
@@ -117,6 +118,12 @@ class mainGUI(QWidget):
         ## Bring all the HBoxes together in a VBox
         vbox = QVBoxLayout()
         vbox.addLayout(status_bar)
+        grid = QGridLayout()
+        grid.setColumnStretch(1, 2)
+        for row, field in enumerate(self.form):
+            grid.addWidget(QLabel(field.name), row, 1)
+            grid.addWidget(QLineEdit("Value?"), row, 2)
+        vbox.addLayout(grid)
         vbox.addLayout(button_bar)
 
         ## Connect UI signals to slots
@@ -126,7 +133,7 @@ class mainGUI(QWidget):
         self.quitButton.clicked.connect(self.close)
 
         ## Establish the window layout
-        #self.setLayout(vbox)
+        self.setLayout(vbox)
 
         ## Set pints.components to desired initial state
         ## tb.setEnabled(False)
