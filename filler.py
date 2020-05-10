@@ -1,7 +1,7 @@
 import sys
 
 from guiFill import mainGUI
-from renderer import Field
+from fields import Field
 
 
 from AnyQt.QtWidgets import QApplication

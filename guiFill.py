@@ -13,8 +13,18 @@ import sys
 
 from datetime import datetime
 
-from AnyQt.QtCore import pyqtSignal, pyqtSlot, QObject, QThread, Qt, QTimer
-from AnyQt.QtGui import QFont, QIcon
+from AnyQt.QtCore import (
+    pyqtSignal,
+    pyqtSlot,
+    QObject,
+    QThread,
+    Qt,
+    QTimer,
+)
+from AnyQt.QtGui import (
+    QFont,
+    QIcon,
+)
 from AnyQt.QtWidgets import (
     QWidget,
     QPushButton,
@@ -101,8 +111,7 @@ class mainGUI(QWidget):
         ## Create all necessary widgets
         ## Short aternate names make configuration simpler ;-)
         ## Buttons
-        #self.startButton = stab = QPushButton("Start")
-        #self.pauseButton = pb = QPushButton("Pause")
+        self.submitButton = subb = QPushButton("Submit")
         self.quitButton = qb = QPushButton("Quit")
         ## Status bar
         self.time_label = lbl = QLabel("00:00:00", font=self.body_font)
@@ -114,16 +123,17 @@ class mainGUI(QWidget):
         ## Buttons
         button_bar = box = QHBoxLayout()
         box.addWidget(qb)
-
+        box.addWidget(subb)
         ## Bring all the HBoxes together in a VBox
         vbox = QVBoxLayout()
         vbox.addLayout(status_bar)
         grid = QGridLayout()
-        grid.setColumnStretch(1, 2)
+        grid.setColumnStretch(2, 1)
         for row, field in enumerate(self.form):
-            grid.addWidget(QLabel(field.name), row, 1)
+            grid.addWidget(QLabel(field.name, alignment=Qt.AlignRight), row, 1)
             grid.addWidget(QLineEdit("Value?"), row, 2)
         vbox.addLayout(grid)
+
         vbox.addLayout(button_bar)
 
         ## Connect UI signals to slots
