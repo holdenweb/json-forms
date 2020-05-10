@@ -127,11 +127,7 @@ class mainGUI(QWidget):
         ## Bring all the HBoxes together in a VBox
         vbox = QVBoxLayout()
         vbox.addLayout(status_bar)
-        grid = QGridLayout()
-        grid.setColumnStretch(2, 1)
-        for row, field in enumerate(self.form):
-            grid.addWidget(QLabel(field.name, alignment=Qt.AlignRight), row, 1)
-            grid.addWidget(QLineEdit("Value?"), row, 2)
+        grid = self.form.render()
         vbox.addLayout(grid)
 
         vbox.addLayout(button_bar)
