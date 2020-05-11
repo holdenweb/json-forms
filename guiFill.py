@@ -28,6 +28,7 @@ from AnyQt.QtGui import (
 from AnyQt.QtWidgets import (
     QWidget,
     QDialog,
+    QDialogButtonBox,
     QPushButton,
     QHBoxLayout,
     QVBoxLayout,
@@ -90,11 +91,12 @@ class ObjectFiller(QDialog):
     msg_sig = pyqtSignal(str)  # Display this message to the operator
     oyn_sig = pyqtSignal(str)  # Request for operator yes/no
 
-    def __init__(self, form):
+    def __init__(self, form=None, parent=None):
         "Create and display the GUI, but do not start it."
+        self.result = None
         self.form  = form
         log.info("Creating GUI object")
-        QWidget.__init__(self)
+        super().__init__(parent=parent)
         self.ui_font = QFont("Microsoft Sans Serif", 12, QFont.Bold)
         self.body_font = QFont("Cooper", 48, QFont.Bold)
         self.setFont(self.ui_font)
@@ -122,20 +124,18 @@ class ObjectFiller(QDialog):
         status_bar = box = QHBoxLayout()
         box.addWidget(lbl)
         ## Buttons
-        button_bar = box = QHBoxLayout()
-        box.addWidget(qb)
-        box.addWidget(subb)
+        self.button_bar = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+        self.button_box = QDialogButtonBox(self.button_bar)
         ## Bring all the HBoxes together in a VBox
         vbox = QVBoxLayout()
         vbox.addLayout(status_bar)
-        grid = self.form.render()
-        vbox.addLayout(grid)
-
-        vbox.addLayout(button_bar)
+        self.grid = self.form.render()
+        vbox.addLayout(self.grid)
+        vbox.addWidget(self.button_box)
 
         ## Connect UI signals to slots
-        self.submitButton.clicked.connect(self.out_value)
-        self.cancelButton.clicked.connect(sys.exit)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
 
         ## Establish the window layout
         self.setLayout(vbox)
@@ -145,9 +145,8 @@ class ObjectFiller(QDialog):
         ## sn.setEnabled(False)
         self.setGeometry(300, 300, 300, 250)
 
-    def out_value(self):
-        print({f.name: f.widget.text() for f in self.form.fields})
-        self.close()
+    def get_value(self):
+        return {f.name: f.widget.text() for f in self.form.fields}
 
     def show_message(self, msg):
         self.messageArea.setText(msg)
@@ -155,64 +154,3 @@ class ObjectFiller(QDialog):
     def add_message(self, msg):
         ma = self.messageArea
         ma.setText(f"{ma.text()}\n\n{msg}")
-
-    # @pyqtSlot(str)
-    # def operator_yes_no(self, msg):
-    # answer = QMessageBox.question(
-    # None,
-    # "Confirm Test Sucess",
-    # msg,
-    # QMessageBox.Yes | QMessageBox.No,
-    # QMessageBox.No,
-    # )
-    ## Signal the caller that the result was received.
-    # self.ryn_sig.emit(answer == QMessageBox.Yes)
-
-    def results(self):
-        return self
-
-class taskGUI(QWidget):
-    def __init__(self, task_id):
-        QWidget.__init__(self)
-        self.task = session.query(Task).filter(Task.id == task_id).one()
-        self.initUI()
-
-    def initUI(self):
-
-        self.body_font = QFont("Cooper", 48, QFont.Bold)
-        self.time_label = tlbl = QLabel("00:00:00", font=self.body_font)
-        self.proj_label = QLabel(self.task.project.description)
-        self.task_label = QLabel(self.task.description)
-        self.startButton = stab = QPushButton("Start")
-        self.pauseButton = pb = QPushButton("Pause")
-        self.finishButton = fb = QPushButton("Finish")
-
-        self.project_bar = box = QHBoxLayout()
-        box.addWidget(QLabel("Project:"))
-        box.addStretch(1)
-        box.addWidget(self.proj_label)
-
-        self.task_bar = box = QHBoxLayout()
-        box.addWidget(QLabel("Task:"))
-        box.addStretch(1)
-        box.addWidget(self.task_label)
-
-        self.button_box = box = QVBoxLayout()
-        box.addWidget(stab)
-        box.addStretch(1)
-        box.addWidget(pb)
-        box.addStretch(1)
-        box.addWidget(fb)
-
-        self.time_bar = box = QHBoxLayout()
-        box.addWidget(tlbl)
-        box.addStretch(1)
-        box.addLayout(self.button_box)
-
-        # Bring all the HBoxes together in a VBox
-        vbox = QVBoxLayout()
-        vbox.addLayout(self.project_bar)
-        vbox.addLayout(self.task_bar)
-        vbox.addLayout(self.time_bar)
-
-        self.setLayout(vbox)

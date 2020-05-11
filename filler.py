@@ -4,7 +4,7 @@ from guiFill import ObjectFiller
 from forms import Form, Field, TextField, TimestampField
 
 
-from AnyQt.QtWidgets import QApplication
+from AnyQt.QtWidgets import QApplication, QMainWindow
 
 form_data = [
     {'name': 'timestamp', 'type': TimestampField},
@@ -14,6 +14,7 @@ form_data = [
 ]
 app = QApplication(sys.argv)
 form = Form([x['type'](x['name']) for x in  form_data])
-gui = ObjectFiller(form)
+main_window = QMainWindow()
+gui = ObjectFiller(form, parent=main_window)
 app.exec_()
-print(gui)
+print(gui.get_value())
