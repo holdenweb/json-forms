@@ -27,6 +27,7 @@ from AnyQt.QtGui import (
 )
 from AnyQt.QtWidgets import (
     QWidget,
+    QDialog,
     QPushButton,
     QHBoxLayout,
     QVBoxLayout,
@@ -70,7 +71,7 @@ class TimerThread(QThread):
         """
         log.info("Running timer thread")
         self.timer.timeout.connect(self.tick)
-        self.exec_()
+        self.exec_()  # Starts the new thread's event handling loop
 
     @pyqtSlot()  # Method can be triggered by events
     def tick(self):
@@ -84,7 +85,7 @@ def secs_to_hms(secs):
     return f"{hrs:02d}:{mins:02d}:{secs:02d}"
 
 
-class mainGUI(QWidget):
+class ObjectFiller(QDialog):
 
     msg_sig = pyqtSignal(str)  # Display this message to the operator
     oyn_sig = pyqtSignal(str)  # Request for operator yes/no
