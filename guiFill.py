@@ -114,21 +114,10 @@ class ObjectFiller(QDialog):
         ## Create all necessary widgets
         ## Short aternate names make configuration simpler ;-)
         ## Buttons
-        self.submitButton = subb = QPushButton("Submit")
-        self.cancelButton = qb = QPushButton("Cancel")
-        ## Status bar
-        self.time_label = lbl = QLabel("00:00:00", font=self.body_font)
-
-        ## Create the HBoxes containing and laying out the widgets
-        ## Status bar
-        status_bar = box = QHBoxLayout()
-        box.addWidget(lbl)
-        ## Buttons
         self.button_bar = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         self.button_box = QDialogButtonBox(self.button_bar)
         ## Bring all the HBoxes together in a VBox
         vbox = QVBoxLayout()
-        vbox.addLayout(status_bar)
         self.grid = self.form.render()
         vbox.addLayout(self.grid)
         vbox.addWidget(self.button_box)
@@ -146,7 +135,7 @@ class ObjectFiller(QDialog):
         self.setGeometry(300, 300, 300, 250)
 
     def get_value(self):
-        return {f.name: f.widget.text() for f in self.form.fields}
+        return {f.name: f.get_value() for f in self.form.fields}
 
     def show_message(self, msg):
         self.messageArea.setText(msg)
