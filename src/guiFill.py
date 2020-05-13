@@ -13,18 +13,8 @@ import sys
 
 from datetime import datetime
 
-from AnyQt.QtCore import (
-    pyqtSignal,
-    pyqtSlot,
-    QObject,
-    QThread,
-    Qt,
-    QTimer,
-)
-from AnyQt.QtGui import (
-    QFont,
-    QIcon,
-)
+from AnyQt.QtCore import pyqtSignal, pyqtSlot, QObject, QThread, Qt, QTimer
+from AnyQt.QtGui import QFont, QIcon
 from AnyQt.QtWidgets import (
     QWidget,
     QDialog,
@@ -94,7 +84,7 @@ class ObjectFiller(QDialog):
     def __init__(self, form=None, parent=None):
         "Create and display the GUI, but do not start it."
         self.result = None
-        self.form  = form
+        self.form = form
         log.info("Creating GUI object")
         super().__init__(parent=parent)
         self.ui_font = QFont("Microsoft Sans Serif", 12, QFont.Bold)

@@ -8,12 +8,7 @@ processing by a JSON pipeline.
 import sys
 import json
 
-data = {
-        'first': (),
-        'second': (),
-        'third': (),
-        'fourth': ()
-        }
+data = {"first": (), "second": (), "third": (), "fourth": ()}
 
 dd = {}
 for name, attrs in data.items():
