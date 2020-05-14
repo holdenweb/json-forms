@@ -23,4 +23,4 @@ if __name__ == "__main__":
             val = {}
         val = DottedDict(val)
         val[key] = json.load(sys.stdin)
-print()
+        db[pk] = val
