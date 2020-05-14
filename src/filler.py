@@ -1,3 +1,4 @@
+import json
 import sys
 
 from guiFill import ObjectFiller
@@ -19,6 +20,6 @@ form = Form(
 )
 gui = ObjectFiller(form, parent=None)
 if gui.exec_():
-    print(gui.get_value())
+    json.dump(gui.get_value(), sys.stdout)
 else:
     sys.exit("Cancelled by user")

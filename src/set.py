@@ -14,9 +14,9 @@ import shelve
 if __name__ == "__main__":
     import sys
 
-    dbn = "test_db"
+    dbn = "database"
     pk, key = sys.argv[1].split(".", 1)
-    with shelve.open(dbn, writeback=True) as db:
+    with shelve.open(dbn) as db:
         try:
             val = db[pk]
         except KeyError:
