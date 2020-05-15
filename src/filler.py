@@ -11,7 +11,7 @@ app = QApplication(sys.argv)
 
 form = Form(
     [
-        TimestampField("timestamp"),
+        TimestampField("timestamp", hidden=True),
         TextField("first"),
         TextField("second"),
         TextField("third"),

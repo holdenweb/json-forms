@@ -30,23 +30,25 @@ class Form:
         grid = QGridLayout()
         grid.setColumnStretch(2, 1)
         for row, field in enumerate(self.fields):
-            grid.addWidget(
-                QLabel(
-                    f"{field.title}: ",
-                    font=QFont("Microsoft Sans Serif", 24, QFont.Bold),
-                    alignment=Qt.AlignRight,
-                ),
-                row,
-                1,
-            )
-            grid.addWidget(field.render(), row, 2)
+            if not field.hidden:
+                grid.addWidget(
+                    QLabel(
+                        f"{field.title}: ",
+                        font=QFont("Microsoft Sans Serif", 24, QFont.Bold),
+                        alignment=Qt.AlignRight,
+                    ),
+                    row,
+                    1,
+                )
+                grid.addWidget(field.render(), row, 2)
         return grid
 
 
 class Field:
-    def __init__(self, name: str, title: str = None, value: str = ""):
+    def __init__(self, name: str, title: str = None, hidden=False, value: str = ""):
         self.name = name
         self.title = title or name.capitalize()
+        self.hidden = hidden
         self.value = value
         self.widget = None
 
@@ -64,8 +66,8 @@ class Field:
 
 
 class TimestampField(Field):
-    def __init__(self, name, *args, **kwargs):
-        super().__init__(name, value="**TIMESTAMP**", *args, **kwargs)
+    def __init__(self, name, hidden=True, *args, **kwargs):
+        super().__init__(name, hidden=hidden, value="**TIMESTAMP**", *args, **kwargs)
 
     def render(self):
         return QLabel(self.value)
@@ -85,7 +87,7 @@ class ObjectField(Field):
         self.form = form
 
     def render(self):
-        self.widget = QPushButton(f"{self.name} ...")
+        self.widget = QPushButton("Edit ...")
         self.widget.clicked.connect(self.get_object)
         return self.widget
 
@@ -96,3 +98,9 @@ class ObjectField(Field):
 
     def get_value(self):
         return {f.name: f.get_value() for f in self.form.fields}
+
+
+class ListField(ObjectField):
+    def get_object(self):
+        self.gui = ListFiller(self.form)
+        result = self.gui.exec_()
