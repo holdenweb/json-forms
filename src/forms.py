@@ -2,7 +2,7 @@
 qtFields.py - definition of Field objects implemented over AnyQt.
 """
 import sys
-from datetime import datetime
+import datetime
 
 from AnyQt.QtCore import pyqtSignal, pyqtSlot, QObject, QThread, Qt, QTimer
 from AnyQt.QtGui import QFont, QIcon
@@ -14,10 +14,13 @@ from AnyQt.QtWidgets import (
     QGridLayout,
     QLabel,
     QLineEdit,
+    QPlainTextEdit,
     QCheckBox,
     QMessageBox,
+    QCalendarWidget,
 )
 
+from uuid import uuid4
 from guiFill import ObjectFiller
 
 
@@ -70,11 +73,21 @@ class TimestampField(Field):
         super().__init__(name, hidden=hidden, value="**TIMESTAMP**", *args, **kwargs)
 
     def render(self):
-        return QLabel(self.value)
+        self.widget = QLabel(self.value)
+        return self.widget
 
     def get_value(self):
-        dt = datetime.now()
+        dt = datetime.datetime.now()
         return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+
+class PlainTextField(Field):
+    def render(self):
+        self.widget = QPlainTextEdit(self.value)
+        return self.widget
+
+    def get_value(self):
+        return self.widget.toPlainText()
 
 
 class TextField(Field):
@@ -98,6 +111,27 @@ class ObjectField(Field):
 
     def get_value(self):
         return {f.name: f.get_value() for f in self.form.fields}
+
+
+class UUIDField(Field):
+    def __init__(self, name, title=None, hidden=False, value=None, *args, **kwargs):
+        if value is None:
+            value = str(uuid4())
+        super().__init__(name, title=None, hidden=hidden, value=value, *args, **kwargs)
+
+    def render(self):
+        self.widget = QLabel(self.value)
+        return self.widget
+
+
+class DateField(Field):
+    def render(self):
+        """Return a QWidget object that can be added to a Form object using addField."""
+        self.widget = QCalendarWidget()
+        return self.widget
+
+    def get_value(self):
+        return self.widget.selectedDate().toString(Qt.ISODate)
 
 
 class ListField(ObjectField):
