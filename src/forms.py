@@ -18,8 +18,9 @@ from AnyQt.QtWidgets import (
     QCheckBox,
     QMessageBox,
     QCalendarWidget,
+    QFileDialog,
 )
-
+from os.path import expanduser
 from uuid import uuid4
 from guiFill import ObjectFiller
 
@@ -50,7 +51,7 @@ class Form:
 class Field:
     def __init__(self, name: str, title: str = None, hidden=False, value: str = ""):
         self.name = name
-        self.title = title or name.capitalize()
+        self.title = title or name.capitalize().replace("_", " ")
         self.hidden = hidden
         self.value = value
         self.widget = None
@@ -94,25 +95,6 @@ class TextField(Field):
     pass
 
 
-class ObjectField(Field):
-    def __init__(self, name, form, *args, **kwargs):
-        super().__init__(name, *args, **kwargs)
-        self.form = form
-
-    def render(self):
-        self.widget = QPushButton("Edit ...")
-        self.widget.clicked.connect(self.get_object)
-        return self.widget
-
-    def get_object(self):
-        self.gui = ObjectFiller(self.form)
-        result = self.gui.exec_()
-        # TODO: Should restore values if necessary - QA testing will determine ...
-
-    def get_value(self):
-        return {f.name: f.get_value() for f in self.form.fields}
-
-
 class UUIDField(Field):
     def __init__(self, name, title=None, hidden=False, value=None, *args, **kwargs):
         if value is None:
@@ -134,7 +116,43 @@ class DateField(Field):
         return self.widget.selectedDate().toString(Qt.ISODate)
 
 
-class ListField(ObjectField):
+class ObjectField(Field):
+    def __init__(self, name, form=None, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
+        self.form = form
+
+    def render(self):
+        self.widget = QPushButton("Edit ...")
+        self.widget.clicked.connect(self.get_object)
+        return self.widget
+
     def get_object(self):
-        self.gui = ListFiller(self.form)
+        self.gui = ObjectFiller(self.form)
         result = self.gui.exec_()
+        # TODO: Should restore values if necessary - QA testing will determine ...
+
+    def get_value(self):
+        return {f.name: f.get_value() for f in self.form.fields}
+
+
+class DirectoryField(ObjectField):
+    def render(self):
+        self.widget = QPushButton("Select directory ...")
+        self.widget.clicked.connect(self.get_object)
+        return self.widget
+
+    def get_object(self):
+        dialog = QFileDialog()
+        self.response = dialog.getExistingDirectory(
+            None, "Choose directory", expanduser("~"), QFileDialog.ShowDirsOnly
+        )
+        if self.response != "":
+            self.value = self.response
+        return self.response != ""
+
+    def get_value(self):
+        """Return whatever the form says should be returned."""
+        if self.widget is None:
+            return self.value
+        else:
+            return self.response
