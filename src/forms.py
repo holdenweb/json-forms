@@ -1,27 +1,31 @@
 """
 qtFields.py - definition of Field objects implemented over AnyQt.
 """
-import sys
 import datetime
-
-from AnyQt.QtCore import pyqtSignal, pyqtSlot, QObject, QThread, Qt, QTimer
-from AnyQt.QtGui import QFont, QIcon
-from AnyQt.QtWidgets import (
-    QWidget,
-    QPushButton,
-    QHBoxLayout,
-    QVBoxLayout,
-    QGridLayout,
-    QLabel,
-    QLineEdit,
-    QPlainTextEdit,
-    QCheckBox,
-    QMessageBox,
-    QCalendarWidget,
-    QFileDialog,
-)
+import sys
 from os.path import expanduser
 from uuid import uuid4
+
+from AnyQt.QtCore import pyqtSignal
+from AnyQt.QtCore import pyqtSlot
+from AnyQt.QtCore import QObject
+from AnyQt.QtCore import Qt
+from AnyQt.QtCore import QThread
+from AnyQt.QtCore import QTimer
+from AnyQt.QtGui import QFont
+from AnyQt.QtGui import QIcon
+from AnyQt.QtWidgets import QCalendarWidget
+from AnyQt.QtWidgets import QCheckBox
+from AnyQt.QtWidgets import QFileDialog
+from AnyQt.QtWidgets import QGridLayout
+from AnyQt.QtWidgets import QHBoxLayout
+from AnyQt.QtWidgets import QLabel
+from AnyQt.QtWidgets import QLineEdit
+from AnyQt.QtWidgets import QMessageBox
+from AnyQt.QtWidgets import QPlainTextEdit
+from AnyQt.QtWidgets import QPushButton
+from AnyQt.QtWidgets import QVBoxLayout
+from AnyQt.QtWidgets import QWidget
 from guiFill import ObjectFiller
 
 
@@ -136,6 +140,10 @@ class ObjectField(Field):
 
 
 class DirectoryField(ObjectField):
+    def __init__(self, name, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
+        self.response = ""
+
     def render(self):
         self.widget = QPushButton("Select directory ...")
         self.widget.clicked.connect(self.get_object)
