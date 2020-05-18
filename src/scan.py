@@ -25,6 +25,7 @@ db_path = os.path.join(ARCHIVE_DIR, ".database")
 
 form = Form(
     [
+        TextField("record_type", title=None, hidden=True, value="ScannedItem"),
         TimestampField("scanned_at", hidden=True),
         DateField("document_date"),
         PlainTextField("description"),
@@ -35,6 +36,8 @@ form = Form(
 if __name__ == "__main__":
     for file_arg in sys.argv[1:]:
         try:
+            with open("/tmp/rhubarb.txt", "a") as log_file:
+                print(f"called with {file_arg}", file=log_file)
             # Get information from user
             data = ObjectDict(fill(form))
             # Compute archive path
@@ -47,7 +50,19 @@ if __name__ == "__main__":
             archive_path = os.path.join(dir_path, f"{file_num}{ext}")
             # Compute path for destination link
             user_path = os.path.join(data.link_dir, f"{file_name}{ext}")
-            print(data, y, m, d, dir_path, file_name, ext, archive_path, user_path)
+            with open("/tmp/rhubarb.txt", "a") as log_file:
+                print(
+                    data,
+                    y,
+                    m,
+                    d,
+                    dir_path,
+                    file_name,
+                    ext,
+                    archive_path,
+                    user_path,
+                    file=log_file,
+                )
             # Move input file to archive, then link to archive file under original name
             shutil.move(file_arg, archive_path)
             os.symlink(archive_path, user_path)
