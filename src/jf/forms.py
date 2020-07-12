@@ -28,41 +28,65 @@ from AnyQt.QtWidgets import QVBoxLayout
 from AnyQt.QtWidgets import QWidget
 from guiFill import ObjectFiller
 
+APP_FONT = QFont("Microsoft Sans Serif", 24, QFont.Bold)
+
+
+class ValidationError(ValueError):
+    pass
+
 
 class Form:
     def __init__(self, fields):
         self.fields = fields
 
     def render(self):
-        """Return a QWidget object that can be added to a layout."""
+        """
+        Return a QWidget object that can be added to a layout.
+        """
         grid = QGridLayout()
         grid.setColumnStretch(2, 1)
         for row, field in enumerate(self.fields):
             if not field.hidden:
                 grid.addWidget(
-                    QLabel(
-                        f"{field.title}: ",
-                        font=QFont("Microsoft Sans Serif", 24, QFont.Bold),
-                        alignment=Qt.AlignRight,
-                    ),
+                    QLabel(f"{field.title}: ", font=APP_FONT, alignment=Qt.AlignRight),
                     row,
                     1,
                 )
                 grid.addWidget(field.render(), row, 2)
         return grid
 
+    def validate(self):
+        """
+        Ensure that all fields meet their individual valdation criteria.
+        """
+        msgs = []
+        for field in self.fields:
+            msgs.extend(field.validate())
+        if msgs:
+            raise ValidationError
+
 
 class Field:
-    def __init__(self, name: str, title: str = None, hidden=False, value: str = ""):
+    def __init__(
+        self,
+        name: str,
+        title: str = None,
+        hidden=False,
+        value: str = "",
+        widget_class=QLineEdit,
+        validator_class=None,
+    ):
         self.name = name
         self.title = title or name.capitalize().replace("_", " ")
         self.hidden = hidden
         self.value = value
+        self.widget_class = widget_class
+        self.validator_class = validator_class
         self.widget = None
 
     def render(self):
         """Return a QWidget object that can be added to a Form object using addField."""
-        self.widget = QLineEdit(self.value)
+        self.widget = self.widget_class(self.value)
         return self.widget
 
     def get_value(self):
@@ -71,6 +95,9 @@ class Field:
             return self.value
         else:
             return self.widget.text()
+
+    def validate(self):
+        return []
 
 
 class TimestampField(Field):

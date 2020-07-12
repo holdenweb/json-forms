@@ -1,20 +1,16 @@
 import json
 import sys
 
-from guiFill import ObjectFiller
-from forms import (
-    Form,
-    Field,
-    TextField,
-    TimestampField,
-    ObjectField,
-    DateField,
-    UUIDField,
-    PlainTextField,
-)
-
-
 from AnyQt.QtWidgets import QApplication
+from forms import DateField
+from forms import Field
+from forms import Form
+from forms import ObjectField
+from forms import PlainTextField
+from forms import TextField
+from forms import TimestampField
+from forms import UUIDField
+from guiFill import ObjectFiller
 
 app = QApplication(sys.argv)
 

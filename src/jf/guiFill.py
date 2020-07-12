@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 """
-gui.py: Cut-down interface to be enhanced later. If necessary.
+guiFill.py: Cut-down interface to be enhanced later. If necessary.
 
 Initially there is no current task, and no duration record.
 
@@ -10,24 +9,27 @@ Initially there is no current task, and no duration record.
 """
 import logging
 import sys
-
 from datetime import datetime
 
-from AnyQt.QtCore import pyqtSignal, pyqtSlot, QObject, QThread, Qt, QTimer
-from AnyQt.QtGui import QFont, QIcon
-from AnyQt.QtWidgets import (
-    QWidget,
-    QDialog,
-    QDialogButtonBox,
-    QPushButton,
-    QHBoxLayout,
-    QVBoxLayout,
-    QGridLayout,
-    QLabel,
-    QLineEdit,
-    QCheckBox,
-    QMessageBox,
-)
+from AnyQt.QtCore import pyqtSignal
+from AnyQt.QtCore import pyqtSlot
+from AnyQt.QtCore import QObject
+from AnyQt.QtCore import Qt
+from AnyQt.QtCore import QThread
+from AnyQt.QtCore import QTimer
+from AnyQt.QtGui import QFont
+from AnyQt.QtGui import QIcon
+from AnyQt.QtWidgets import QCheckBox
+from AnyQt.QtWidgets import QDialog
+from AnyQt.QtWidgets import QDialogButtonBox
+from AnyQt.QtWidgets import QGridLayout
+from AnyQt.QtWidgets import QHBoxLayout
+from AnyQt.QtWidgets import QLabel
+from AnyQt.QtWidgets import QLineEdit
+from AnyQt.QtWidgets import QMessageBox
+from AnyQt.QtWidgets import QPushButton
+from AnyQt.QtWidgets import QVBoxLayout
+from AnyQt.QtWidgets import QWidget
 
 log = logging.getLogger(name="GUI.main")
 log.setLevel(logging.INFO)
@@ -102,7 +104,7 @@ class ObjectFiller(QDialog):
         self.setWindowTitle(self.app_title)
 
         ## Create all necessary widgets
-        ## Short aternate names make configuration simpler ;-)
+        ## Short alternate names make configuration simpler.
         ## Buttons
         self.button_bar = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         self.button_box = QDialogButtonBox(self.button_bar)
@@ -125,6 +127,7 @@ class ObjectFiller(QDialog):
         self.setGeometry(300, 300, 300, 250)
 
     def get_value(self):
+        msgs = self.form.validate()
         return {f.name: f.get_value() for f in self.form.fields}
 
     def show_message(self, msg):

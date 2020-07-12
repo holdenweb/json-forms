@@ -1,4 +1,5 @@
-LF = '\n'
+LF = "\n"
+
 
 def render(obj):
     output = []
@@ -6,9 +7,11 @@ def render(obj):
         output.append(field.render())
     return LF.join(output)
 
+
 class Field:
     def __init__(self, name: str):
         self.name = name
+
     def render(self):
         return f"""\
 <div>
@@ -32,10 +35,12 @@ class Field:
 </div>
 """
 
+
 class ObjField(Field):
     def __init__(self, name: str, fields: list):
         self.fields = fields
         super().__init__(self, name)
+
     def render_input(self):
         for field in self.fields:
             output.append(Field(field).render())
@@ -44,6 +49,6 @@ class ObjField(Field):
     {LF.join(output)}
 </div>
 """
-form_fields = [
-    Field("First")
-]
+
+
+form_fields = [Field("First")]

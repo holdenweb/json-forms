@@ -2,14 +2,13 @@
 Value fields are provided by data specifications that I
 haven't yet really thought about enough.
 """
-
 import json
-import sys
-from hu import ObjectDict, DottedDict
-
 import shelve
-
+import sys
 from contextlib import contextmanager
+
+from hu import DottedDict
+from hu import ObjectDict
 
 
 @contextmanager

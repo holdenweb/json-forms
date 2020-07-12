@@ -4,12 +4,12 @@ Standard UNIX filtering: JSON input comes from stdin,
 
 Creates empty dictionary if primary key not present.
 """
-
 import json
-import sys
-from hu import ObjectDict, DottedDict
-
 import shelve
+import sys
+
+from hu import DottedDict
+from hu import ObjectDict
 
 if __name__ == "__main__":
     import sys
