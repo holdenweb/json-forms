@@ -3,6 +3,15 @@
 The main current purpose of this document is to explain how
 to get your computer to run this software. Follow these steps.
 
+1.  Clone this repository into a directory of your choice (in this
+    example, `json-forms`:
+
+        git close https://github.com/holdenweb/json-forms.git json-forms
+
+2.  Switch to the directory you just created
+
+        cd json-forms
+
 1.  Create a copy of the required virtual environment with
     this command (you should do this just once):
 
